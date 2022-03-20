@@ -1,6 +1,4 @@
-from flask import Flask
 from flask_pymongo import pymongo
-from app import app
 
 client = pymongo.MongoClient(
     "mongodb+srv://teleporter:teleporter@cluster0.paoye.mongodb.net/teleporter?retryWrites=true&w=majority")
