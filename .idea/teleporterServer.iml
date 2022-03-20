@@ -4,7 +4,14 @@
     <option name="enabled" value="true" />
   </component>
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/env/Lib/site-packages/gunicorn" />
+      <excludeFolder url="file://$MODULE_DIR$/env/Lib/site-packages/gunicorn-20.1.0.dist-info" />
+      <excludeFolder url="file://$MODULE_DIR$/env/Lib/site-packages/pip/_internal/resolution/legacy" />
+      <excludeFolder url="file://$MODULE_DIR$/env/Lib/site-packages/pip/_vendor/html5lib/treeadapters" />
+      <excludeFolder url="file://$MODULE_DIR$/env/Lib/site-packages/pip/_vendor/urllib3/packages/ssl_match_hostname" />
+      <excludeFolder url="file://$MODULE_DIR$/env/Lib/site-packages/setuptools/extern" />
+    </content>
     <orderEntry type="jdk" jdkName="Python 3.9 (teleporterServer)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

@@ -100,7 +100,7 @@ def login():
 
         return make_response(jsonify({'token': token.decode(encoding='utf-8', errors='strict'),
                                       'user': {'user_id': user['user_id'], 'name': user['name'],
-                                               'phone': user['phone']}}), 201)
+                                               'phone': user['phone']}}), 200)
     # returns 403 if password is wrong
     return make_response(
         'Could not verify',
