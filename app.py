@@ -61,10 +61,16 @@ def signup():
     if db.hasAnUser(phone):
         return make_response('User already exists. Please Log in.', 202)
     passwd_hash = generate_password_hash(password)
-    print(passwd_hash)
     user = {"user_id": str(uuid.uuid4()), "name": name, "phone": phone, "password": passwd_hash}
     db.user_collection.insert_one(user)
-    return make_response('Successfully registered.', 201)
+
+    token = jwt.encode({
+        'user_id': user['user_id'],
+        'exp': datetime.utcnow() + timedelta(minutes=30)
+    }, app.config['SECRET_KEY'])
+    return make_response(jsonify({'token': token.decode(encoding='utf-8', errors='strict'),
+                                  'user': {'user_id': user['user_id'], 'name': user['name'],
+                                           'phone': user['phone']}}), 201)
 
 
 @app.route('/login', methods=['POST'])
@@ -92,7 +98,9 @@ def login():
             'exp': datetime.utcnow() + timedelta(minutes=30)
         }, app.config['SECRET_KEY'])
 
-        return make_response(jsonify({'token': token.decode(encoding='utf-8', errors='strict')}), 201)
+        return make_response(jsonify({'token': token.decode(encoding='utf-8', errors='strict'),
+                                      'user': {'user_id': user['user_id'], 'name': user['name'],
+                                               'phone': user['phone']}}), 201)
     # returns 403 if password is wrong
     return make_response(
         'Could not verify',
