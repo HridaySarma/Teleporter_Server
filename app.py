@@ -59,7 +59,9 @@ def signup():
     name, phone = data.get('name'), data.get('phone')
     password = data.get('password')
     if db.hasAnUser(phone):
-        return make_response('User already exists. Please Log in.', 202)
+        return make_response(jsonify({'token': '',
+                                      'user': {'user_id': '', 'name': '',
+                                               'phone': ''}, 'error': 'User already Exists!, Login to Continue'}), 202)
     passwd_hash = generate_password_hash(password)
     user = {"user_id": str(uuid.uuid4()), "name": name, "phone": phone, "password": passwd_hash}
     db.user_collection.insert_one(user)
@@ -70,7 +72,7 @@ def signup():
     }, app.config['SECRET_KEY'])
     return make_response(jsonify({'token': token.decode(encoding='utf-8', errors='strict'),
                                   'user': {'user_id': user['user_id'], 'name': user['name'],
-                                           'phone': user['phone']}}), 201)
+                                           'phone': user['phone']}, 'error': ''}), 201)
 
 
 @app.route('/login', methods=['POST'])
@@ -78,18 +80,12 @@ def login():
     auth = request.form
 
     if not auth or not auth.get('phone') or not auth.get('password'):
-        return make_response(
-            'Could not verify',
-            401,
-            {'WWW-Authenticate': 'Basic realm ="Login required !!"'}
-        )
+        return make_response({'token': '', 'user': {'user_id': '', 'name': '',
+                                                    'phone': ''}, 'error': 'Authentication Failed'}, 401)
 
     if not db.hasAnUser(auth.get('phone')):
-        return make_response(
-            'Could not verify',
-            401,
-            {'WWW-Authenticate': 'Basic realm ="User does not exist !!"'}
-        )
+        return make_response({'token': '', 'user': {'user_id': '', 'name': '',
+                                                    'phone': ''}, 'error': 'User Does not exist'}, 401)
 
     user = db.findUserByPhone(auth.get('phone'))[0]
     if check_password_hash(user['password'], auth.get('password')):
@@ -100,13 +96,10 @@ def login():
 
         return make_response(jsonify({'token': token.decode(encoding='utf-8', errors='strict'),
                                       'user': {'user_id': user['user_id'], 'name': user['name'],
-                                               'phone': user['phone']}}), 200)
+                                               'phone': user['phone']}, 'error': ''}), 200)
     # returns 403 if password is wrong
-    return make_response(
-        'Could not verify',
-        403,
-        {'WWW-Authenticate': 'Basic realm ="Wrong Password !!"'}
-    )
+    return make_response({'token': '', 'user': {'user_id': '', 'name': '',
+                                                'phone': ''}, 'error': 'Password incorrect'}, 403)
 
 
 if __name__ == '__main__':
